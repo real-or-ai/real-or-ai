@@ -137,11 +137,11 @@
       document.querySelectorAll('.img-card').forEach(card => card.style.pointerEvents = 'none');
 
       if (index === aiIndex) {
-        document.getElementById("result").textContent = "Correct! 🎉";
+        document.getElementById("result").textContent = "Correct!";
         document.getElementById("result").style.color = "green";
         score++; // Increment score on correct guess
       } else {
-        document.getElementById("result").textContent = "Wrong! 😢";
+        document.getElementById("result").textContent = "Wrong!";
         document.getElementById("result").style.color = "red";
       }
     }
