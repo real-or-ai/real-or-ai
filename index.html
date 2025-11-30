@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Image Detector Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    #game-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .img-card {
+      width: 300px;
+      height: 300px;
+      overflow: hidden;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      cursor: pointer;
+      background: white;
+    }
+    .img-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    #result {
+      font-size: 1.4rem;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>AI Image Detector Game</h1>
+  <p>Click the image you think is AI generated.</p>
+
+  <div id="game-container">
+    <div class="img-card" onclick="guess(0)">
+      <img id="img0" />
+    </div>
+    <div class="img-card" onclick="guess(1)">
+      <img id="img1" />
+    </div>
+  </div>
+
+  <div id="result"></div>
+
+  <button onclick="nextRound()">Next</button>
+
+  <script>
+    // Replace this with your actual image list in your GitHub repo
+    const rounds = [
+  {
+    real: "./images/real/corgi.jpg",
+    ai: "./images/ai/corgi.jpg"
+  },
+  {
+    real: "./images/real/fruit.jpg",
+    ai: "./images/ai/fruit.jpg"
+  },
+  {
+    real: "./images/real/tree.jpg",
+    ai: "./images/ai/tree.png"
+  },
+  {
+    real: "./images/real/woman.jpg",
+    ai: "./images/ai/woman.jpg"
+  },
+  {
+    real: "./images/real/mountain.jpg",
+    ai: "./images/ai/mountain.jpg"
+  },
+  {
+    real: "./images/real/snowboard.jpg",
+    ai: "./images/ai/snowboard.jpg"
+  },
+  {
+    real: "./images/real/turtle.jpg",
+    ai: "./images/ai/turtle.jpg"
+  },
+  {
+    real: "./images/real/hiking.jpg",
+    ai: "./images/ai/hiking.jpg"
+  },
+  {
+    real: "./images/real/lake.jpg",
+    ai: "./images/ai/lake.jpg"
+  },
+  {
+    real: "./images/real/cake.jpg",
+    ai: "./images/ai/cake.jpg"
+  }
+];
+
+    let currentRound = 0;
+    let aiIndex = 0;
+    let score = 0; // Initialize score
+    let gameOver = false; // To prevent further guesses after game over
+
+    function loadRound() {
+      if (gameOver) return; // Don't load new rounds if game is over
+
+      const round = rounds[currentRound];
+      const shuffled = Math.random() < 0.5;
+
+      aiIndex = shuffled ? 0 : 1;
+
+      document.getElementById("img0").src = shuffled ? round.ai : round.real;
+      document.getElementById("img1").src = shuffled ? round.real : round.ai;
+
+      document.getElementById("result").textContent = "";
+      // Re-enable image clicking for the new round
+      document.querySelectorAll('.img-card').forEach(card => card.style.pointerEvents = 'auto');
+    }
+
+    function guess(index) {
+      if (gameOver) return; // Don't allow guessing if game is over
+
+      // Disable further clicks on images for this round after a guess
+      document.querySelectorAll('.img-card').forEach(card => card.style.pointerEvents = 'none');
+
+      if (index === aiIndex) {
+        document.getElementById("result").textContent = "Correct! 🎉";
+        document.getElementById("result").style.color = "green";
+        score++; // Increment score on correct guess
+      } else {
+        document.getElementById("result").textContent = "Wrong! 😢";
+        document.getElementById("result").style.color = "red";
+      }
+    }
+
+    function nextRound() {
+      if (gameOver) {
+        // If game is over and "Next" is clicked, restart the game
+        currentRound = 0;
+        score = 0;
+        gameOver = false;
+        document.querySelector('button').textContent = "Next"; // Reset button text
+        loadRound();
+        return;
+      }
+
+      currentRound++;
+      if (currentRound >= rounds.length) {
+        // Game Over!
+        gameOver = true;
+        document.getElementById("result").textContent = `Game Over! Your final score is: ${score} out of ${rounds.length}!`;
+        document.getElementById("result").style.color = "blue";
+        document.querySelector('button').textContent = "Play Again?"; // Change button text
+        // Optionally, disable image clicking here too, although nextRound already handles this for ongoing rounds.
+        document.querySelectorAll('.img-card').forEach(card => card.style.pointerEvents = 'none');
+
+      } else {
+        loadRound();
+      }
+    }
+
+    loadRound();
+  </script>
+</body>
+</html>
